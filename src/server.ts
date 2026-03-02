@@ -3,6 +3,10 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import authRoutes from './routes/auth';
+import userRoutes from './routes/users';
+import productRoutes from './routes/products';
+import orderRoutes from './routes/orders';
 
 dotenv.config();
 
@@ -22,10 +26,10 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
-app.use('/api/auth', require('./routes/auth').default);
-app.use('/api/users', require('./routes/users').default);
-app.use('/api/products', require('./routes/products').default);
-app.use('/api/orders', require('./routes/orders').default);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Error handling middleware
 app.use((err: any, req: any, res: any, next: any) => {
