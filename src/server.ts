@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -32,13 +32,13 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 
 // Error handling middleware
-app.use((err: any, req: any, res: any, next: any) => {
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Internal Server Error', message: err.message });
 });
 
 // 404 handler
-app.use((req, res) => {
+app.use((_req: Request, res: Response) => {
   res.status(404).json({ error: 'Not Found', message: 'Route not found' });
 });
 
