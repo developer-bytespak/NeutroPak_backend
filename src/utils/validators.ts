@@ -82,6 +82,20 @@ export const PaymentQuerySchema = PaginationSchema.extend({
   endDate: z.string().optional(),
 });
 
+// Contact Validators
+export const CreateContactSchema = z.object({
+  name: z.string().min(2).max(100),
+  email: z.string().email(),
+  phone: z.string().min(5).max(30),
+  message: z.string().min(10).max(2000),
+});
+
+export const ContactQuerySchema = PaginationSchema.extend({
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  email: z.string().optional(),
+});
+
 // Type exports for easier usage
 export type CreateProductInput = z.infer<typeof CreateProductSchema>;
 export type UpdateProductInput = z.infer<typeof UpdateProductSchema>;
@@ -90,3 +104,4 @@ export type UpdateOrderStatusInput = z.infer<typeof UpdateOrderStatusSchema>;
 export type UpdatePaymentInput = z.infer<typeof UpdatePaymentSchema>;
 export type LoginInput = z.infer<typeof LoginSchema>;
 export type RefreshTokenInput = z.infer<typeof RefreshTokenSchema>;
+export type CreateContactInput = z.infer<typeof CreateContactSchema>;

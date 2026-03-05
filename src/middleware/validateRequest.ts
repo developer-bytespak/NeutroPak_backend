@@ -2,15 +2,22 @@ import { Request, Response, NextFunction } from 'express';
 import { ZodSchema } from 'zod';
 import { errorResponse } from '../utils/responseFormatter';
 
-export const validateRequest = (schema: ZodSchema) => {
+export const validateRequest = (schema: ZodSchema, source: 'body' | 'query' = 'body') => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validated = await schema.parseAsync(req.body);
-      req.body = validated;
+      const dataToValidate = source === 'query' ? req.query : req.body;
+      const validated = await schema.parseAsync(dataToValidate);
+      
+      if (source === 'query') {
+        (req as any).query = validated as any;
+      } else {
+        req.body = validated;
+      }
+      
       next();
     } catch (error: any) {
       console.error('=== VALIDATION ERROR ===');
-      console.error('Request body:', JSON.stringify(req.body, null, 2));
+      console.error(`Request ${source}:`, JSON.stringify(source === 'query' ? req.query : req.body, null, 2));
       
       if (error.name === 'ZodError') {
         const details: any = {};
@@ -23,7 +30,7 @@ export const validateRequest = (schema: ZodSchema) => {
         }
         
         console.error('Validation details:', details);
-        errorResponse(res, 'ValidationError', 'Request validation failed', 400, details);
+        errorResponse(res, 'ValidationError', `${source} validation failed`, 400, details);
       } else {
         console.error('Non-validation error:', error);
         errorResponse(res, 'ValidationError', error.message || 'Invalid request', 400);
