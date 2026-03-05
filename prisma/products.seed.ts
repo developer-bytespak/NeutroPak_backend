@@ -9,7 +9,7 @@ async function seedProducts() {
         price: 1450.0,
         category: 'Infused Honey',
         stock: 50,
-        imageUrl: null,
+        imageUrl: 'https://res.cloudinary.com/dsm9mtete/image/upload/v1772667655/cinamin_500g_ddj7hh.jpg',
       },
       {
         name: 'Chilli Infused Honey (500g)',
@@ -17,7 +17,7 @@ async function seedProducts() {
         price: 1450.0,
         category: 'Infused Honey',
         stock: 50,
-        imageUrl: null,
+        imageUrl: 'https://res.cloudinary.com/dsm9mtete/image/upload/v1772667656/chilli_500g_lheqpz.jpg',
       },
       {
         name: 'Acacia Honey (500g)',
@@ -25,7 +25,7 @@ async function seedProducts() {
         price: 1380.0,
         category: 'Pure Honey',
         stock: 50,
-        imageUrl: null,
+        imageUrl: 'https://res.cloudinary.com/dsm9mtete/image/upload/v1772667656/acacia_500g_raeazc.jpg',
       },
       {
         name: 'Acacia Honey (250g)',
@@ -33,7 +33,7 @@ async function seedProducts() {
         price: 850.0,
         category: 'Pure Honey',
         stock: 50,
-        imageUrl: null,
+        imageUrl: 'https://res.cloudinary.com/dsm9mtete/image/upload/v1772667659/acaciaa_250g_grsch6.png',
       },
       {
         name: 'Chilli Infused Honey (250g)',
@@ -41,7 +41,7 @@ async function seedProducts() {
         price: 930.0,
         category: 'Infused Honey',
         stock: 50,
-        imageUrl: null,
+        imageUrl: 'https://res.cloudinary.com/dsm9mtete/image/upload/v1772667656/chilli_infused_250g_placeholder.jpg',
       },
       {
         name: 'Cinnamon Infused Honey (250g)',
@@ -49,7 +49,7 @@ async function seedProducts() {
         price: 930.0,
         category: 'Infused Honey',
         stock: 50,
-        imageUrl: null,
+        imageUrl: 'https://res.cloudinary.com/dsm9mtete/image/upload/v1772667656/cinamin_infused_250g_lfq2ns.png',
       },
       {
         name: 'Gift Box (250g)',
@@ -57,7 +57,7 @@ async function seedProducts() {
         price: 2450.0,
         category: 'Gift Sets',
         stock: 50,
-        imageUrl: null,
+        imageUrl: 'https://res.cloudinary.com/dsm9mtete/image/upload/v1772667655/giftbox_k1t9wx.jpg',
       },
     ];
 
