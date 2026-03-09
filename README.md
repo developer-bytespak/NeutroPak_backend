@@ -1,6 +1,6 @@
-# NeutroPak Backend API
+# NutreoPak Backend API
 
-A production-ready Express.js TypeScript backend API for the NeutroPak application.
+A production-ready Express.js TypeScript backend API for the NutreoPak application.
 
 ## Project Structure
 
@@ -41,8 +41,8 @@ Neutro_backend/
 
 1. Clone the repository
 ```bash
-git clone https://github.com/developer-bytespak/NeutroPak_backend.git
-cd NeutroPak_backend
+git clone https://github.com/developer-bytespak/NutreoPak_backend.git
+cd NutreoPak_backend
 ```
 
 2. Install dependencies
@@ -63,7 +63,7 @@ PORT=3001
 NODE_ENV=development
 JWT_SECRET=your-super-secret-jwt-key
 JWT_EXPIRES_IN=7d
-DATABASE_URL=mongodb://localhost:27017/neutropak
+DATABASE_URL=mongodb://localhost:27017/nutreopak
 ```
 
 ### Development

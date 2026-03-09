@@ -1,5 +1,5 @@
 export interface User {
-  id: string;
+  id: number;
   email: string;
   name: string;
   password: string;
@@ -9,38 +9,90 @@ export interface User {
 }
 
 export interface Product {
-  id: string;
+  id: number;
   name: string;
   description: string;
   price: number;
   category: string;
   stock: number;
-  imageUrl?: string;
+  imageUrl?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface Order {
-  id: string;
-  userId: string;
-  items: OrderItem[];
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  country?: string | null;
+  state?: string | null;
+  shippingMethod: string;
+  shippingCost: number;
+  subtotal: number;
+  tax: number;
   total: number;
-  status: 'pending' | 'completed' | 'cancelled';
+  status: 'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
+  orderItems?: OrderItem[];
+  payment?: Payment;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface OrderItem {
-  productId: string;
+  id?: number;
+  orderId?: number;
+  productId: number;
   quantity: number;
   price: number;
+  product?: Product;
 }
 
-export interface ApiResponse<T> {
+export interface Payment {
+  id: number;
+  orderId: number;
+  amount: number;
+  paymentMethod: string;
+  paymentStatus: 'PENDING' | 'COMPLETED';
+  collectedAt?: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateOrderRequest {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  country?: string;
+  state?: string;
+  shippingMethod?: string;
+  orderItems: {
+    productId: number;
+    quantity: number;
+    price: number;
+  }[];
+  subtotal: number;
+  tax: number;
+  shippingCost: number;
+  total: number;
+  paymentMethod: string;
+}
+
+export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
   message?: string;
   error?: string;
+  statusCode?: number;
+  details?: any;
 }
 
 export interface AuthToken {
@@ -50,7 +102,9 @@ export interface AuthToken {
 }
 
 export interface JwtPayload {
-  id: string;
+  id: number;
   email: string;
   role: string;
+  iat: number;
+  exp: number;
 }

@@ -1,25 +1,13 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import { loginAdmin, logoutAdmin, refreshAccessToken } from '../controllers/authController';
+import { validateRequest } from '../middleware/validateRequest';
+import { authMiddleware } from '../middleware/authMiddleware';
+import { LoginSchema, RefreshTokenSchema } from '../utils/validators';
 
 const router = Router();
 
-// Login
-router.post('/login', (req: Request, res: Response) => {
-  res.json({ message: 'Login endpoint', token: 'sample-token' });
-});
-
-// Register
-router.post('/register', (req: Request, res: Response) => {
-  res.json({ message: 'Register endpoint' });
-});
-
-// Logout
-router.post('/logout', (req: Request, res: Response) => {
-  res.json({ message: 'Logout endpoint' });
-});
-
-// Refresh token
-router.post('/refresh', (req: Request, res: Response) => {
-  res.json({ message: 'Token refreshed' });
-});
+router.post('/login', validateRequest(LoginSchema), loginAdmin);
+router.post('/logout', authMiddleware, logoutAdmin);
+router.post('/refresh-token', validateRequest(RefreshTokenSchema), refreshAccessToken);
 
 export default router;

@@ -1,30 +1,25 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import {
+  getAllProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from '../controllers/productController';
+import { authMiddleware } from '../middleware/authMiddleware';
+import { adminMiddleware } from '../middleware/adminMiddleware';
+import { validateRequest } from '../middleware/validateRequest';
+import { CreateProductSchema, UpdateProductSchema } from '../utils/validators';
 
 const router = Router();
 
-// Get all products
-router.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Get all products', products: [] });
-});
+// Public routes
+router.get('/', getAllProducts);
+router.get('/:id', getProductById);
 
-// Get product by ID
-router.get('/:id', (req: Request, res: Response) => {
-  res.json({ message: 'Get product by ID', productId: req.params.id });
-});
-
-// Create product
-router.post('/', (req: Request, res: Response) => {
-  res.json({ message: 'Create product', product: req.body });
-});
-
-// Update product
-router.put('/:id', (req: Request, res: Response) => {
-  res.json({ message: 'Update product', productId: req.params.id, data: req.body });
-});
-
-// Delete product
-router.delete('/:id', (req: Request, res: Response) => {
-  res.json({ message: 'Delete product', productId: req.params.id });
-});
+// Admin routes
+router.post('/', authMiddleware, adminMiddleware, validateRequest(CreateProductSchema), createProduct);
+router.put('/:id', authMiddleware, adminMiddleware, validateRequest(UpdateProductSchema), updateProduct);
+router.delete('/:id', authMiddleware, adminMiddleware, deleteProduct);
 
 export default router;

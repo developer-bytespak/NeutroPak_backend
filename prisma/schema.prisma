@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ USER TABLE ============
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  name      String
+  role      String    @default("admin")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// ============ PRODUCT TABLE ============
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String
+  price       Decimal   @db.Decimal(10, 2)
+  category    String
+  stock       Int       @default(0)
+  imageUrl    String?
+  orderItems  OrderItem[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// ============ ORDER TABLE ============
+// Matches frontend CheckoutForm fields plus cart summary
+model Order {
+  id              Int       @id @default(autoincrement())
+  
+  // Customer Information (from form)
+  firstName       String
+  lastName        String
+  email           String
+  phone           String
+  
+  // Delivery Address (from form - matching frontend field names)
+  address         String
+  city            String
+  postalCode      String
+  country         String?
+  state           String?
+  
+  // Shipping Selection
+  shippingMethod  String    @default("standard") // standard, expedited, overnight
+  shippingCost    Decimal   @db.Decimal(10, 2)   // 0 for standard, 15.99 for expedited, 29.99 for overnight
+  
+  // Order Summary (calculated from cart items)
+  subtotal        Decimal   @db.Decimal(10, 2)
+  tax             Decimal   @db.Decimal(10, 2)
+  total           Decimal   @db.Decimal(10, 2)   // subtotal + tax + shippingCost
+  
+  // Order Status
+  status          String    @default("PENDING")  // PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED
+  
+  // Relations
+  orderItems      OrderItem[]
+  payment         Payment?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// ============ ORDER ITEM TABLE (Bridge) ============
+// Links Orders to Products with quantity and price snapshot
+model OrderItem {
+  id          Int       @id @default(autoincrement())
+  
+  orderId     Int
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productId   Int
+  product     Product   @relation(fields: [productId], references: [id])
+  
+  quantity    Int
+  price       Decimal   @db.Decimal(10, 2)  // Price at time of order (snapshot)
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([orderId, productId])  // Prevent duplicate items in same order
+}
+
+// ============ PAYMENT TABLE (COD Only) ============
+model Payment {
+  id              Int       @id @default(autoincrement())
+  
+  orderId         Int       @unique
+  order           Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  amount          Decimal   @db.Decimal(10, 2)  // Total amount to collect (Order.total)
+  paymentMethod   String    @default("COD")     // Always COD for now
+  paymentStatus   String    @default("PENDING") // PENDING (awaiting delivery) or COMPLETED (collected)
+  
+  collectedAt     DateTime? // When delivery agent collected the payment
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// ============ CONTACT TABLE ============
+// Stores contact form submissions from the contact page
+model Contact {
+  id              Int       @id @default(autoincrement())
+  name            String
+  email           String
+  phone           String
+  message         String    @db.Text
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}

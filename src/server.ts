@@ -7,6 +7,10 @@ import authRoutes from './routes/auth';
 import userRoutes from './routes/users';
 import productRoutes from './routes/products';
 import orderRoutes from './routes/orders';
+import paymentRoutes from './routes/payments';
+import uploadRoutes from './routes/upload';
+import contactRoutes from './routes/contact';
+import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
 
@@ -22,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health Check Route
 app.get('/health', (req, res) => {
-  res.json({ status: 'OK', message: 'NeutroPak Backend API is running' });
+  res.json({ status: 'OK', message: 'NutreoPak Backend API is running' });
 });
 
 // API Routes
@@ -30,17 +34,17 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
-
-// Error handling middleware
-app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Internal Server Error', message: err.message });
-});
+app.use('/api/payments', paymentRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/contact', contactRoutes);
 
 // 404 handler
 app.use((_req: Request, res: Response) => {
-  res.status(404).json({ error: 'Not Found', message: 'Route not found' });
+  res.status(404).json({ success: false, error: 'Not Found', message: 'Route not found', statusCode: 404 });
 });
+
+// Error handling middleware (MUST be last)
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
