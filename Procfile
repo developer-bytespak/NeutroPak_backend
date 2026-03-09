@@ -1,1 +1,1 @@
-web: npm install && npm run build && npm start
+web: bash render-build.sh && npm start
