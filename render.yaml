@@ -3,7 +3,7 @@ services:
     name: neutro-backend
     env: node
     plan: free
-    buildCommand: bash render-build.sh
+    buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
