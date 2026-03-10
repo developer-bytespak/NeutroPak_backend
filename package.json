@@ -12,6 +12,9 @@
     "prisma:seed": "ts-node prisma/seed.ts",
     "prisma:seed:products": "ts-node prisma/products.seed.ts"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "5.22.0",
     "axios": "^1.6.0",

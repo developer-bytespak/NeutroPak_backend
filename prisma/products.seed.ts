@@ -53,7 +53,7 @@ async function seedProducts() {
       },
       {
         name: 'Gift Box (250g)',
-        description: 'Premium honey gift box (250g). Perfect for special occasions and gifts.',
+        description: 'Premium honey gift box containing three carefully selected honey varieties: Cinnamon infused honey (250g), Chilli infused honey (250g), and Acacia honey (250g). Perfect for honey enthusiasts and special occasions.',
         price: 2450.0,
         category: 'Gift Sets',
         stock: 50,
@@ -61,18 +61,17 @@ async function seedProducts() {
       },
     ];
 
-    // Delete existing products first (optional - comment out if you want to keep existing products)
-    await prisma.product.deleteMany({});
-
-    // Create new products
+    // Update or create products
     for (const product of products) {
-      await prisma.product.create({
-        data: product,
+      await prisma.product.upsert({
+        where: { name: product.name },
+        update: product,
+        create: product,
       });
-      console.log(`✅ Created: ${product.name}`);
+      console.log(`✅ Updated/Created: ${product.name}`);
     }
 
-    console.log('\n✅ All 7 products seeded successfully!');
+    console.log('\n✅ All 7 products synced successfully!');
   } catch (error) {
     console.error('❌ Error seeding products:', error);
     throw error;
