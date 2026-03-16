@@ -37,7 +37,7 @@ export const sendOrderConfirmationEmail = async (
     const itemsHtml = items
       .map(
         (item) =>
-          `<li style="margin: 8px 0;">${item.name} – Qty: ${item.quantity} – ₨${item.price.toLocaleString()}</li>`
+          `<div style="margin: 8px 0;">${item.name} – Qty: ${item.quantity} – ₨${item.price.toLocaleString()}</div>`
       )
       .join('');
 
@@ -106,13 +106,7 @@ export const sendOrderConfirmationEmail = async (
                 color: white;
                 margin: 0;
               }
-              ul {
-                margin: 10px 0;
-                padding-left: 0;
-              }
-              li {
-                margin: 8px 0;
-              }
+
             </style>
           </head>
           <body>
@@ -135,13 +129,7 @@ export const sendOrderConfirmationEmail = async (
                 
                 <div class="section">
                   <div class="section-title">Items Ordered</div>
-                  <ul>${itemsHtml}</ul>
-                </div>
-                
-                <div class="section">
-                  <div class="section-title">Total Amount</div>
-                  <h3 style="margin: 10px 0; color: #daa520;">₨${total.toLocaleString()}</h3>
-                  <p><strong>Payment Method:</strong> Cash on Delivery (COD)</p>
+                  <div>${itemsHtml}</div>
                 </div>
                 
                 <p style="margin-top: 30px;">We will notify you when your order is shipped.</p>
@@ -227,7 +215,7 @@ export const sendOrderStatusEmail = async (
       itemsHtml = items
         .map(
           (item) =>
-            `<li style="margin: 8px 0;">${item.name} – Qty: ${item.quantity} – ₨${item.price.toLocaleString()}</li>`
+            `<div style="margin: 8px 0;">${item.name} – Qty: ${item.quantity} – ₨${item.price.toLocaleString()}</div>`
         )
         .join('');
     }
@@ -299,10 +287,6 @@ ${orderDetails.country || 'Pakistan'} ${orderDetails.postalCode}`;
                 color: white;
                 margin: 0;
               }
-              ul {
-                margin: 10px 0;
-                padding-left: 0;
-              }
             </style>
           </head>
           <body>
@@ -326,7 +310,7 @@ ${orderDetails.country || 'Pakistan'} ${orderDetails.postalCode}`;
                 ${itemsHtml ? `
                 <div class="section">
                   <div class="section-title">Items Ordered</div>
-                  <ul>${itemsHtml}</ul>
+                  <div>${itemsHtml}</div>
                 </div>
                 ` : ''}
 
