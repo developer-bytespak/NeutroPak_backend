@@ -37,7 +37,7 @@ export const sendOrderConfirmationEmail = async (
     const itemsHtml = items
       .map(
         (item) =>
-          `<div style="margin: 8px 0;">${item.name} – Qty: ${item.quantity} – ₨${item.price.toLocaleString()}</div>`
+          `<div style="margin: 8px 0; padding: 8px; border-bottom: 1px solid #eee;">${item.name} <span style="color: #666;">(Qty: ${item.quantity})</span> <span style="float: right; font-weight: bold;">₨${item.price.toLocaleString()}</span></div>`
       )
       .join('');
 
@@ -215,7 +215,7 @@ export const sendOrderStatusEmail = async (
       itemsHtml = items
         .map(
           (item) =>
-            `<div style="margin: 8px 0;">${item.name} – Qty: ${item.quantity} – ₨${item.price.toLocaleString()}</div>`
+            `<div style="margin: 8px 0; padding: 8px; border-bottom: 1px solid #eee;">${item.name} <span style="color: #666;">(Qty: ${item.quantity})</span> <span style="float: right; font-weight: bold;">₨${item.price.toLocaleString()}</span></div>`
         )
         .join('');
     }
