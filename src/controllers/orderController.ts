@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { successResponse, errorResponse, paginatedResponse } from '../utils/responseFormatter';
 import { CreateOrderInput, UpdateOrderStatusInput } from '../utils/validators';
+import { sendOrderStatusEmail, sendOrderConfirmationEmail } from '../services/emailService';
 
 export const createOrder = async (req: Request, res: Response) => {
   try {
@@ -115,6 +116,33 @@ export const createOrder = async (req: Request, res: Response) => {
 
     const orderNo = `ORD-2026-${String(order.id).padStart(6, '0')}`;
 
+    // Fetch order items for confirmation email
+    const orderItems = await prisma.orderItem.findMany({
+      where: { orderId: order.id },
+      include: { product: true },
+    });
+
+    // Send order confirmation email
+    try {
+      const emailItems = orderItems.map((item) => ({
+        name: item.product?.name || 'Product',
+        quantity: item.quantity,
+        price: typeof item.price === 'object' ? parseFloat(item.price.toString()) : item.price,
+      }));
+      const totalAmount = typeof order.total === 'object' ? parseFloat(order.total.toString()) : order.total;
+      await sendOrderConfirmationEmail(
+        order.email,
+        order.id,
+        orderNo,
+        order.firstName,
+        emailItems,
+        totalAmount
+      );
+    } catch (emailError) {
+      console.error('Failed to send order confirmation email:', emailError);
+      // Don't fail the order creation if email fails
+    }
+
     successResponse(
       res,
       {
@@ -220,12 +248,67 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { status }: UpdateOrderStatusInput = req.body;
 
+    // Fetch the order with its details and items before updating
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        orderItems: {
+          include: { product: true },
+        },
+      },
+    });
+
+    if (!existingOrder) {
+      errorResponse(res, 'NotFoundError', `Order with id ${id} not found`, 404);
+      return;
+    }
+
     const order = await prisma.order.update({
       where: { id: parseInt(id) },
       data: { status },
+      include: {
+        orderItems: {
+          include: { product: true },
+        },
+      },
     });
 
     const orderNo = `ORD-2026-${String(order.id).padStart(6, '0')}`;
+
+    // Send order status update email with full order details
+    try {
+      // Format order items for email
+      const items = order.orderItems.map((item) => ({
+        name: item.product.name,
+        quantity: item.quantity,
+        price: item.product.price.toNumber() * item.quantity,
+      }));
+
+      // Prepare shipping address details
+      const orderDetails = {
+        firstName: order.firstName,
+        lastName: order.lastName,
+        address: order.address,
+        city: order.city,
+        state: order.state,
+        postalCode: order.postalCode,
+        country: order.country,
+      };
+
+      await sendOrderStatusEmail(
+        order.email,
+        order.id,
+        orderNo,
+        order.firstName,
+        status,
+        items,
+        order.total.toNumber(),
+        orderDetails
+      );
+    } catch (emailError) {
+      console.error('Failed to send order status email:', emailError);
+      // Don't fail the status update if email fails
+    }
 
     successResponse(res, { ...order, orderNo }, `Order status updated to ${status}`);
   } catch (error: any) {
