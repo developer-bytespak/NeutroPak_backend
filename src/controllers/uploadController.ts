@@ -4,13 +4,29 @@ import { successResponse, errorResponse } from '../utils/responseFormatter';
 
 export const uploadImage = async (req: Request & { file?: any }, res: Response) => {
   try {
+    console.log('📤 Upload request received');
+    console.log('req.file:', req.file);
+    console.log('req.body:', req.body);
+    
     if (!req.file) {
+      console.error('❌ No file in request');
       errorResponse(res, 'ValidationError', 'No file provided', 400);
       return;
     }
 
+    console.log('✅ File received:', {
+      filename: req.file.filename,
+      path: req.file.path,
+      size: req.file.size,
+      mimetype: req.file.mimetype,
+    });
+
     const folder = req.query.folder as string || 'neutropak/media';
+    console.log(`📁 Uploading to Cloudinary folder: ${folder}`);
+    
     const result = await uploadToCloudinary(req.file.path, folder);
+    
+    console.log('✅ Upload successful:', result);
 
     successResponse(
       res,
@@ -25,7 +41,12 @@ export const uploadImage = async (req: Request & { file?: any }, res: Response) 
       201
     );
   } catch (error: any) {
-    errorResponse(res, 'UploadError', error.message, 500);
+    console.error('❌ Upload error:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+    });
+    errorResponse(res, 'UploadError', error.message || 'Unknown error', 500);
   }
 };
 

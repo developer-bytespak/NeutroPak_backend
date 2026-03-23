@@ -14,14 +14,14 @@ router.use(authMiddleware);
  * Upload a single image
  * Query params: folder (optional, default: neutropak/media)
  */
-router.post('/image', upload.single('file'), cleanupTempFile, uploadImage);
+router.post('/image', upload.single('file'), uploadImage, cleanupTempFile);
 
 /**
  * POST /api/upload/multiple
  * Upload multiple images
  * Query params: folder (optional, default: neutropak/media)
  */
-router.post('/multiple', upload.array('files', 10), cleanupTempFile, uploadMultiple);
+router.post('/multiple', upload.array('files', 10), uploadMultiple, cleanupTempFile);
 
 /**
  * DELETE /api/upload/image
