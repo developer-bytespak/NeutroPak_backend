@@ -132,6 +132,12 @@ export const sendOrderConfirmationEmail = async (
                   <div>${itemsHtml}</div>
                 </div>
                 
+                <div class="section" style="background-color: #fff8dc; border-left-color: #daa520;">
+                  <div style="font-size: 18px; font-weight: bold; text-align: right; color: #333;">
+                    Total Amount: <span style="color: #daa520;">₨${total.toLocaleString()}</span>
+                  </div>
+                </div>
+                
                 <p style="margin-top: 30px;">We will notify you when your order is shipped.</p>
                 
                 <p style="margin-top: 20px; color: #666;">
